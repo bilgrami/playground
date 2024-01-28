@@ -81,6 +81,26 @@ The script will process the CSV files and create an output.csv file with the com
 ## Example
 Given a master file master.csv and source files a.csv, b.csv, etc., the run.sh script will merge the data from these source files into master.csv, remove the specified columns, and optionally include the lineage information.
 
+# Running tests
+```bash
+cd test
+chmod +x ./test_merge_import.sh
+./test_merge_import.sh
+```
+
+output 
+```
+$ ./test_merge_import.sh 
+Data processing complete. Output file: ./playground/2024-01-csvImportToMaster/test/output.csv
+Running test: Merge files test
+Test PASSED
+Running test: Remove columns test
+Test PASSED
+Data processing complete. Output file: ./playground/2024-01-csvImportToMaster/test/output.csv
+Running test: Include lineage test
+Test PASSED
+All tests passed successfully!
+```
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
