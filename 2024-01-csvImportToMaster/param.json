@@ -1,0 +1,11 @@
+{
+  "masterFilePath": "./data/master.csv",
+  "SourceFileFolderLocation": "./data/sources",
+  "SourceFileDelimiter": "|",
+  "masterFileColumnsList": ["Date", "Full Name", "Manager ID", "End Date"],
+  "sourceFileColumnsList": ["Date", "Employee ID", "First Name", "Last Name", "Full Name", "Manager ID", "End Date"],
+  "columnsToRemoveFromSourceFileList": ["First Name", "Last Name"],
+  "columnsToAppendFromSourceFile": ["Date", "Full Name", "Manager ID", "End Date"],
+  "OutputFileName": "./data/output/output.csv",
+  "includeLineage": false
+}
