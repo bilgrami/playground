@@ -1,14 +1,27 @@
 #!/bin/bash
 # Purpose: Script to import csv files to master file
-# Read the parameters from param.json.
+# Read the parameters from supplied param.json in the command line
 # Iterate over each source CSV file in the specified folder.
 # Append the records to the master file after removing the specified columns.
 # This code is auto-generated
 
-#!/bin/bash
+# Check if a file name is provided as input
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 param_file.json"
+    exit 1
+fi
 
-# Read parameters from param.json
-params=$(jq '.' param.json)
+# Assign the first argument to a variable
+param_file="$1"
+
+# Check if the file exists
+if [ ! -f "$param_file" ]; then
+    echo "Error: File '$param_file' not found!"
+    exit 1
+fi
+
+# Read parameters from the specified file
+params=$(jq '.' "$param_file")
 
 masterFilePath=$(jq -r '.masterFilePath' <<< "$params")
 sourceFileFolder=$(jq -r '.SourceFileFolderLocation' <<< "$params")

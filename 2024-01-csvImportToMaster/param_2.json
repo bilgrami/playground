@@ -1,0 +1,11 @@
+{
+  "masterFilePath": "./data_2/master.csv",
+  "SourceFileFolderLocation": "./data_2/sources",
+  "SourceFileDelimiter": ",",
+  "masterFileColumnsList": ["Meeting Name","Meeting Start Time","Meeting End Time","Name","Attendee Email","Join Time","Leave Time","Attendance Duration","Connection Type"],
+  "sourceFileColumnsList": ["Meeting Name","Meeting Start Time","Meeting End Time","Name","First Name","Last Name","Role","Attendee Email","Join Time","Leave Time","Attendance Duration","Connection Type","Session Name"],
+  "columnsToRemoveFromSourceFileList": ["First Name","Last Name","Role"],
+  "columnsToAppendFromSourceFile": ["Meeting Name","Meeting Start Time","Meeting End Time","Name","Attendee Email","Join Time","Leave Time","Attendance Duration","Connection Type"],
+  "OutputFileName": "./data_2/output/output.csv",
+  "includeLineage": false
+}

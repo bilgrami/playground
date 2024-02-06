@@ -44,7 +44,7 @@ EOF
 
 # Test 1: Verify if the script correctly merges files
 test_merge_files() {
-    ../merge_import_csv.sh
+    ../merge_import_csv.sh ./param.json
     grep -q "Jane Doe" output.csv
     run_test "Merge files test" "[ $? -eq 0 ]" 0
 }
@@ -58,7 +58,7 @@ test_remove_columns() {
 # Test 3: Verify lineage information inclusion
 test_include_lineage() {
     sed -i 's/"includeLineage": false/"includeLineage": true/' param.json
-    ../merge_import_csv.sh
+    ../merge_import_csv.sh ./param.json
     grep -q "Date Created,Source File Name" output.csv
     run_test "Include lineage test" "[ $? -eq 0 ]" 0
 }

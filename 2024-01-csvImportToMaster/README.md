@@ -72,8 +72,8 @@ Place your source CSV files in the folder specified in param.json.
 Make the script executable and run it:
 
 ```bash
-chmod +x merge_import_csv.sh.sh
-./merge_import_csv.sh.sh
+chmod +x merge_import_csv.sh
+./merge_import_csv.sh ./param.json
 ```
 
 The script will process the CSV files and create an output.csv file with the combined data.

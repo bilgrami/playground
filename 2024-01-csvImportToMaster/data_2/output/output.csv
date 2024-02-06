@@ -1,0 +1,21 @@
+Meeting Name,Meeting Start Time,Meeting End Time,Attendee Email,Join Time,Leave Time,Attendance Duration,Connection Type
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,robert.wilson@example.com,2024-02-06 09:00:41,2024-02-06 09:56:46,56,Cellular
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,sarah.williams@example.com,2024-02-06 09:02:29,2024-02-06 09:58:58,56,Wired
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,emily.wilson@example.com,2024-02-06 09:03:36,2024-02-06 09:56:59,53,Cellular
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,emily.jones@example.com,2024-02-06 09:04:36,2024-02-06 09:59:20,54,Wired
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,jane.jones@example.com,2024-02-06 09:04:38,2024-02-06 09:55:27,50,WiFi
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,sarah.wilson@example.com,2024-02-06 09:00:04,2024-02-06 09:58:32,58,WiFi
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,sarah.williams@example.com,2024-02-06 09:04:47,2024-02-06 09:57:25,52,Cellular
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,michael.davis@example.com,2024-02-06 09:02:34,2024-02-06 09:58:31,55,Cellular
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,robert.johnson@example.com,2024-02-06 09:01:55,2024-02-06 09:57:01,55,Cellular
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,sarah.wilson@example.com,2024-02-06 09:03:45,2024-02-06 09:59:32,55,Wired
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,emily.williams@example.com,2024-02-06 09:03:47,2024-02-06 09:58:48,55,Cellular,Monthly Review
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,robert.brown@example.com,2024-02-06 09:00:33,2024-02-06 09:57:48,57,WiFi,Weekly Sync
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,michael.wilson@example.com,2024-02-06 09:03:42,2024-02-06 09:56:10,52,Wired,Monthly Review
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,laura.wilson@example.com,2024-02-06 09:01:29,2024-02-06 09:58:37,57,Wired,Weekly Sync
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,jane.johnson@example.com,2024-02-06 09:02:46,2024-02-06 09:58:27,55,Wired,Weekly Sync
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,john.johnson@example.com,2024-02-06 09:01:34,2024-02-06 09:59:40,58,WiFi,Project Kickoff
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,michael.brown@example.com,2024-02-06 09:00:05,2024-02-06 09:56:40,56,Cellular,Monthly Review
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,jane.johnson@example.com,2024-02-06 09:00:07,2024-02-06 09:55:04,54,WiFi,Monthly Review
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,sarah.wilson@example.com,2024-02-06 09:00:10,2024-02-06 09:56:18,56,WiFi,Quarterly Planning
+Weekly Team Meeting,2024-02-06 09:00:00,2024-02-06 10:00:00,michael.smith@example.com,2024-02-06 09:00:28,2024-02-06 09:57:50,57,Wired,Monthly Review
