@@ -1,0 +1,28 @@
+# config.yml
+# NOTE: You can override any value via CLI flags (see README).
+
+out_dir: out
+
+options:
+  schema: true
+  table_ddl: true
+  data: true
+  procs: true
+
+left:
+  account: "YOUR_ACCOUNT"
+  user: "YOUR_USER"
+  authenticator: "externalbrowser"
+  role: "ROLE_A"
+  warehouse: "WH"
+  database: "DB_A"
+  schema: "SCHEMA_A"
+
+right:
+  account: "YOUR_ACCOUNT"
+  user: "YOUR_USER"
+  authenticator: "externalbrowser"
+  role: "ROLE_B"
+  warehouse: "WH"
+  database: "DB_B"
+  schema: "SCHEMA_B"
