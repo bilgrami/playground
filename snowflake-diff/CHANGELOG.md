@@ -22,6 +22,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-01-14 | 🧹 chore: dynamic badges via CI artifacts
+
+### 📄 Summary
+- Generate coverage and unit test badges from CI artifacts.
+- Publish badge JSON to GitHub Pages for dynamic Shields endpoints.
+
+### 📁 Files Changed
+- `.github/workflows/tests.yml`
+- `README.md`
+- `CHANGELOG.md`
+
+### 🧠 Rationale
+- Keep coverage and test count badges in sync with CI results.
+
+### 🔄 Behavior / Compatibility Implications
+- Adds a GitHub Pages deploy job for badge artifacts.
+
+### 🧪 Testing Recommendations
+- `make test`
+
+### 📌 Follow‑ups
+- Enable GitHub Pages (Actions) if not already configured.
+
 ## 2026-01-14 | 📘 docs: testing + badges + dev notes
 
 ### 📄 Summary
