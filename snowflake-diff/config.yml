@@ -1,5 +1,4 @@
 # config.yml
-# NOTE: You can override any value via CLI flags (see README).
 
 out_dir: out
 
@@ -8,20 +7,26 @@ options:
   table_ddl: true
   data: true
   procs: true
+  comments: true
+  last_changed: true
+
+# Optional table filtering (applies to table-level checks: DDL/data/DESC column comments)
+table_filter:
+  include: ["FACT_%"]          # SQL LIKE patterns (% and _)
+  exclude: ["TMP_%", "re:^ZZ_"] # mix LIKE + regex
+
+comment_collection:
+  column_mode: "desc"          # "desc" or "account_usage"
 
 left:
-  account: "YOUR_ACCOUNT"
-  user: "YOUR_USER"
-  authenticator: "externalbrowser"
+  connection: "dev"            # <-- SnowCLI connection name
   role: "ROLE_A"
   warehouse: "WH"
   database: "DB_A"
   schema: "SCHEMA_A"
 
 right:
-  account: "YOUR_ACCOUNT"
-  user: "YOUR_USER"
-  authenticator: "externalbrowser"
+  connection: "prod"           # <-- SnowCLI connection name
   role: "ROLE_B"
   warehouse: "WH"
   database: "DB_B"
