@@ -1,5 +1,9 @@
 # Snowflake Diff (SnowCLI)
 
+[![Tests](https://github.com/bilgrami/playground/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/coverage-67%25-brightgreen)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
+[![Unit Tests](https://img.shields.io/badge/unit%20tests-8-blue)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
+
 A Python-first tool to compare two Snowflake environments (**left** vs **right**) using **SnowCLI** (`snow sql`).
 It generates:
 - Unified diff files under `out/diffs/`
@@ -220,6 +224,81 @@ Override right role at runtime:
 
 ```bash
 python3 scripts/snowdiff.py --config config.yml diff --right-role NEW_ROLE
+```
+
+---
+
+## PRD (product requirements)
+
+### Goal
+Provide a reliable, CLI-driven diff for Snowflake schema and data drift across two environments.
+
+### Users
+- Data engineers and platform teams validating dev/stage/prod drift.
+- Analysts needing a quick, auditable diff snapshot.
+
+### Core requirements
+- Compare left/right Snowflake environments using SnowCLI connection profiles.
+- Generate audit-friendly artifacts: diffs, summary, snapshots, and a text report.
+- Allow scoped diffs via include/exclude filters and configurable toggles.
+- Keep output deterministic for repeatable runs.
+
+### Non-goals
+- Full data reconciliation or row-level change lists.
+- Live monitoring or continuous deployment tracking.
+
+### Success metrics
+- Diffs generated in a single command without manual SnowSQL usage.
+- Usable outputs in `out/` with direct links from `SUMMARY.md`.
+
+---
+
+## TDD (test-driven development notes)
+
+### Unit test scope
+- Pure utility functions in `scripts/utils.py` and `scripts/diffing.py`.
+- Markdown report generation in `scripts/reporting.py`.
+
+### What we do not unit test
+- SnowCLI execution paths in `scripts/auth.py` and collectors that require a live Snowflake session.
+- End-to-end diff runs (covered via manual runs against real environments).
+
+### Coverage bar
+Unit tests enforce `67%` minimum coverage via `make test`.
+
+---
+
+## Developer notes (getting started)
+
+1) Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2) Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+3) Run unit tests:
+
+```bash
+make test
+```
+
+4) Run a connection test:
+
+```bash
+make connect-test
+```
+
+5) Run a diff:
+
+```bash
+make diff
 ```
 
 ---

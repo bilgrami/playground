@@ -10,11 +10,12 @@ PYTHON ?= python3
 CONFIG ?= config.yml
 OUT ?= out
 
-.PHONY: help install connect-test diff diff-fast diff-ddl showreport clean
+.PHONY: help install test connect-test diff diff-fast diff-ddl showreport clean
 
 help:
 	@echo "Targets:"
 	@echo "  install       Install python deps"
+	@echo "  test          Run unit tests with coverage"
 	@echo "  connect-test  Run connection tests for left/right"
 	@echo "  diff          Full diff (default config options)"
 	@echo "  diff-fast     Skip data hashing + skip procedures"
@@ -24,6 +25,9 @@ help:
 
 install:
 	$(PYTHON) -m pip install -r requirements.txt
+
+test:
+	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=67
 
 connect-test:
 	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) connect-test
