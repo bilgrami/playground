@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-01-14 | 🚀 feat: Comprehensive Jupyter Notebook with PySpark Support
+
+### 📄 Summary
+- Created world-class interactive Jupyter notebook (`examples/demo.ipynb`) with 10 self-contained milestones
+- Added PySpark integration for large-scale document processing and performance optimization
+- Enhanced notebook with extensive markdown documentation explaining concepts for junior developers
+- Added scenarios for large document handling and performance improvement techniques
+- All imports consolidated at the top of cells for clarity
+- Notebook designed to run in Docker containers with PySpark support
+
+### 📁 Files Changed
+- `examples/demo.ipynb` - Complete rebuild with milestone-based structure
+- `requirements.txt` - Added `pyspark>=3.5.0` and `findspark>=2.0.0`
+- `README.md` - Updated with notebook and PySpark information
+- `DEVELOPMENT.md` - Added Docker and notebook usage instructions
+- `CHANGELOG.md` - This entry
+
+### 🧠 Rationale
+- Provide comprehensive learning resource for data engineers and data scientists
+- Enable processing of large JSON documents using distributed computing (PySpark)
+- Make complex concepts accessible to junior developers through detailed explanations
+- Support Docker-based development workflows for consistent environments
+
+### 🔄 Behavior / Compatibility Implications
+- New optional dependency (PySpark) - gracefully handles when not available
+- Notebook is self-contained and can be run independently
+- No breaking changes to existing codebase
+
+### 🧪 Testing Recommendations
+- Run notebook cells sequentially to verify all examples work
+- Test PySpark integration with large datasets (if PySpark available)
+- Verify Docker container setup with Jupyter and PySpark
+
+### 📌 Follow‑ups
+- Consider adding more PySpark optimization examples
+- Add performance benchmarking comparisons between single-threaded and PySpark approaches
+- Create Docker Compose file specifically for notebook development
+
+---
+
 ## Format
 - **Reverse chronological order** (newest at top)
 - **Header format:** `YYYY-MM-DD | <category>: <title>`
