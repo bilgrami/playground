@@ -1,8 +1,8 @@
 # Snowflake Diff (SnowCLI)
 
-[![Tests](https://github.com/bilgrami/playground/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
-[![Coverage](https://img.shields.io/endpoint?url=https://bilgrami.github.io/playground/snowflake-diff/badges/coverage.json)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
-[![Unit Tests](https://img.shields.io/endpoint?url=https://bilgrami.github.io/playground/snowflake-diff/badges/tests.json)](https://github.com/bilgrami/playground/actions/workflows/tests.yml)
+[![Tests](https://github.com/bilgrami/playground/actions/workflows/snowflake-diff-tests.yml/badge.svg?branch=main)](https://github.com/bilgrami/playground/actions/workflows/snowflake-diff-tests.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://bilgrami.github.io/playground/snowflake-diff/badges/coverage.json)](https://github.com/bilgrami/playground/actions/workflows/snowflake-diff-tests.yml)
+[![Unit Tests](https://img.shields.io/endpoint?url=https://bilgrami.github.io/playground/snowflake-diff/badges/tests.json)](https://github.com/bilgrami/playground/actions/workflows/snowflake-diff-tests.yml)
 
 A Python-first tool to compare two Snowflake environments (**left** vs **right**) using **SnowCLI** (`snow sql`).
 It generates:

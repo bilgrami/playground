@@ -1,0 +1,5 @@
+[run]
+source = json_flatten
+
+[report]
+show_missing = True

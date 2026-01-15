@@ -1,0 +1,106 @@
+name: Snowflake Diff Tests
+
+on:
+  push:
+    paths:
+      - "snowflake-diff/**"
+      - ".github/workflows/snowflake-diff-tests.yml"
+  pull_request:
+    paths:
+      - "snowflake-diff/**"
+      - ".github/workflows/snowflake-diff-tests.yml"
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: snowflake-diff
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run unit tests
+        run: python -m pytest --cov=scripts --cov-report=term-missing --cov-report=xml --cov-fail-under=67
+      - name: Generate badge JSON
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import math
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          from subprocess import check_output
+
+          coverage_xml = Path("coverage.xml")
+          root = ET.fromstring(coverage_xml.read_text(encoding="utf-8"))
+          line_rate = float(root.attrib.get("line-rate", "0"))
+          coverage_pct = int(math.floor(line_rate * 100 + 1e-6))
+          color = (
+              "brightgreen"
+              if coverage_pct >= 90
+              else "green"
+              if coverage_pct >= 80
+              else "yellowgreen"
+              if coverage_pct >= 70
+              else "yellow"
+              if coverage_pct >= 60
+              else "orange"
+          )
+
+          tests_raw = check_output(["python", "-m", "pytest", "--collect-only", "-q"], text=True)
+          test_count = len([line for line in tests_raw.splitlines() if line.strip()])
+
+          badges_dir = Path("badges")
+          badges_dir.mkdir(parents=True, exist_ok=True)
+
+          coverage_badge = {
+              "schemaVersion": 1,
+              "label": "coverage",
+              "message": f"{coverage_pct}%",
+              "color": color,
+          }
+          tests_badge = {
+              "schemaVersion": 1,
+              "label": "unit tests",
+              "message": str(test_count),
+              "color": "blue",
+          }
+
+          (badges_dir / "coverage.json").write_text(json.dumps(coverage_badge), encoding="utf-8")
+          (badges_dir / "tests.json").write_text(json.dumps(tests_badge), encoding="utf-8")
+          PY
+      - name: Upload badge artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snowflake-diff-badges
+          path: snowflake-diff/badges
+
+  publish-badges:
+    if: github.ref == 'refs/heads/main'
+    needs: unit
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Download badge artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: snowflake-diff-badges
+          path: pages/snowflake-diff/badges
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
