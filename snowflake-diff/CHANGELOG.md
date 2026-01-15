@@ -22,6 +22,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-01-14 | 🧹 chore: repo-level CI workflow for badges
+
+### 📄 Summary
+- Added a repo-root CI workflow for snowflake-diff tests and badge publishing.
+- Updated README badges to point at the new workflow.
+
+### 📁 Files Changed
+- `.github/workflows/snowflake-diff-tests.yml`
+- `README.md`
+- `CHANGELOG.md`
+
+### 🧠 Rationale
+- Ensure the workflow runs from the repository root so badges resolve correctly.
+
+### 🔄 Behavior / Compatibility Implications
+- No runtime changes; CI only.
+
+### 🧪 Testing Recommendations
+- `make test`
+
+### 📌 Follow‑ups
+- Remove the legacy workflow under `snowflake-diff/.github/` if no longer needed.
+
 ## 2026-01-14 | 🧹 chore: dynamic badges via CI artifacts
 
 ### 📄 Summary

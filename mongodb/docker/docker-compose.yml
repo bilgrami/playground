@@ -1,0 +1,18 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+  ingest:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: flattening
+      MONGO_COLLECTION: records
+      CSV_PATH: /data/input.csv
+    volumes:
+      - ${CSV_PATH:-../out/scenarios/list_of_objects_explode/output.csv}:/data/input.csv:ro
+    depends_on:
+      - mongo

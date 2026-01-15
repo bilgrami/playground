@@ -1,0 +1,11 @@
+{
+  "user": {
+    "id": 42,
+    "profile": {
+      "name": "Ada",
+      "active": true
+    }
+  },
+  "tags": ["alpha", "beta"],
+  "score": 9.5
+}
