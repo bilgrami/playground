@@ -22,6 +22,56 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-01-14 | 🧹 chore: Makefile docker helpers
+
+### 📄 Summary
+- Added Makefile targets for Docker helpers and CSV ingestion.
+
+### 📁 Files Changed
+- `Makefile`
+- `CHANGELOG.md`
+
+### 🧠 Rationale
+- Provide consistent CLI ergonomics for Docker workflows.
+
+### 🔄 Behavior / Compatibility Implications
+- Adds new Makefile targets only.
+
+### 🧪 Testing Recommendations
+- `make docker-up`
+- `make ingest CSV=out/scenarios/list_of_objects_explode/output.csv`
+- `make docker-down`
+
+### 📌 Follow‑ups
+- None.
+
+## 2026-01-14 | 🧹 chore: docker helper scripts and docs
+
+### 📄 Summary
+- Added helper scripts to start/stop MongoDB and ingest arbitrary CSV files.
+- Expanded README with a Docker helpers section.
+
+### 📁 Files Changed
+- `scripts/docker_up.sh`
+- `scripts/docker_down.sh`
+- `scripts/ingest_csv.sh`
+- `README.md`
+- `CHANGELOG.md`
+
+### 🧠 Rationale
+- Make Docker workflows repeatable and developer-friendly.
+
+### 🔄 Behavior / Compatibility Implications
+- Adds new scripts; no runtime changes to existing flows.
+
+### 🧪 Testing Recommendations
+- `scripts/docker_up.sh`
+- `scripts/ingest_csv.sh out/scenarios/list_of_objects_explode/output.csv`
+- `scripts/docker_down.sh`
+
+### 📌 Follow‑ups
+- None.
+
 ## 2026-01-14 | 🧹 chore: CI workflow and scenario upgrades
 
 ### 📄 Summary

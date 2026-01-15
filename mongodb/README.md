@@ -81,6 +81,32 @@ scripts/seed_mongo.sh multi_path_explosion
 mongosh mongodb://localhost:27017
 ```
 
+## Docker helpers
+
+Start only the MongoDB service:
+
+```bash
+scripts/docker_up.sh
+```
+
+Stop containers and remove volumes:
+
+```bash
+scripts/docker_down.sh
+```
+
+Ingest any CSV file into MongoDB:
+
+```bash
+scripts/ingest_csv.sh out/scenarios/list_of_objects_explode/output.csv
+```
+
+The Docker compose file mounts `CSV_PATH` into the ingest container, so you can also run:
+
+```bash
+CSV_PATH=../out/scenarios/multi_path_explosion/output.csv docker compose -f docker/docker-compose.yml up --build --abort-on-container-exit ingest
+```
+
 ## Scenarios
 
 See `docs/scenarios.md` for intermediate and advanced cases and how they map to output CSV.
