@@ -1,0 +1,8 @@
+[run]
+source = scripts
+omit =
+    scripts/collectors.py
+    scripts/snowdiff.py
+
+[report]
+show_missing = True
