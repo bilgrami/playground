@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: json-flatten-notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ..:/home/jovyan/work
+    working_dir: /home/jovyan/work/mongodb
+    command: jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.token='' --NotebookApp.password=''
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - SPARK_LOCAL_HOSTNAME=localhost
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
