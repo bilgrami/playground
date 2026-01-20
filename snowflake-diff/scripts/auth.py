@@ -71,7 +71,10 @@ def ensure_snowcli() -> None:
         )
 
 
-def run_sql(target: SnowTarget, query: str) -> str:
+DEFAULT_TIMEOUT_SECONDS = 300  # 5 minutes
+
+
+def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
     """Run a SQL query via SnowCLI and return TSV output.
 
     The command is executed with:
@@ -86,19 +89,26 @@ def run_sql(target: SnowTarget, query: str) -> str:
         The Snowflake target describing connection and namespace.
     query:
         SQL string to execute.
+    timeout:
+        Maximum time in seconds to wait for the query. Defaults to 300 seconds.
+        Set to None for no timeout (not recommended for production).
 
     Returns
     -------
     str
         TSV output as text with normalized newlines. If the SnowCLI command fails,
         a sentinel string starting with ``__ERROR__`` is returned containing the
-        exit code and stderr.
+        exit code and stderr. If the command times out, an ``__ERROR__`` sentinel
+        with ``TIMEOUT`` is returned.
 
     Notes
     -----
     If your SnowCLI uses a different flag name than ``--connection``, update the
     command list below (single place change).
     """
+    if timeout is None:
+        timeout = DEFAULT_TIMEOUT_SECONDS
+
     cmd = [
         "snow",
         "sql",
@@ -120,7 +130,13 @@ def run_sql(target: SnowTarget, query: str) -> str:
         "false",
     ]
 
-    proc = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    try:
+        proc = subprocess.run(
+            cmd, check=False, capture_output=True, text=True, timeout=timeout
+        )
+    except subprocess.TimeoutExpired:
+        return f"__ERROR__\tTIMEOUT\tQuery timed out after {timeout} seconds\n"
+
     if proc.returncode != 0:
         return f"__ERROR__\t{proc.returncode}\t{(proc.stderr or '').strip()}\n"
 

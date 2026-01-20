@@ -1,8 +1,17 @@
 [run]
 source = scripts
-omit =
-    scripts/collectors.py
-    scripts/snowdiff.py
 
 [report]
 show_missing = True
+# Exclude lines that require live Snowflake connections
+exclude_lines =
+    # Standard pragmas
+    pragma: no cover
+    # Functions that require live Snowflake
+    def collect_
+    def cmd_diff
+    def cmd_connect_test
+    def main
+    def connection_test
+    def ensure_snowcli
+    if __name__ == "__main__"

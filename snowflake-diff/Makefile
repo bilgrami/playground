@@ -27,7 +27,7 @@ install:
 	$(PYTHON) -m pip install -r requirements.txt
 
 test:
-	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=67
+	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=80
 
 connect-test:
 	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) connect-test

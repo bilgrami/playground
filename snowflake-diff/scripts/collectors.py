@@ -51,9 +51,21 @@ class Options:
 
 @dataclass(frozen=True)
 class TableFilter:
-    """Include/exclude patterns for table selection."""
+    """Include/exclude patterns for table selection.
+
+    Attributes
+    ----------
+    include : List[str]
+        Patterns to include tables (LIKE-style or regex with ``re:`` prefix).
+    exclude : List[str]
+        Patterns to exclude tables.
+    case_sensitive : bool
+        If False (default), pattern matching is case-insensitive, which is
+        recommended for Snowflake where unquoted identifiers are case-insensitive.
+    """
     include: List[str]
     exclude: List[str]
+    case_sensitive: bool = False
 
 
 @dataclass(frozen=True)
@@ -114,24 +126,65 @@ def sql_like_to_fnmatch(pattern: str) -> str:
     return pattern.replace("%", "*").replace("_", "?")
 
 
-def matches_pattern(name: str, pattern: str) -> bool:
-    """Return True if name matches pattern (LIKE by default, regex via ``re:``)."""
+def matches_pattern(name: str, pattern: str, case_sensitive: bool = False) -> bool:
+    """Return True if name matches pattern (LIKE by default, regex via ``re:``).
+
+    Parameters
+    ----------
+    name : str
+        The table name to check.
+    pattern : str
+        The pattern to match against. Use ``re:`` prefix for regex patterns.
+    case_sensitive : bool
+        If False (default), matching is case-insensitive. This is recommended
+        for Snowflake where unquoted identifiers are case-insensitive.
+
+    Returns
+    -------
+    bool
+        True if the name matches the pattern.
+    """
     if pattern.startswith("re:"):
-        return re.search(pattern[3:], name) is not None
-    return fnmatch.fnmatchcase(name, sql_like_to_fnmatch(pattern))
+        flags = 0 if case_sensitive else re.IGNORECASE
+        return re.search(pattern[3:], name, flags) is not None
+
+    fn_pattern = sql_like_to_fnmatch(pattern)
+    if case_sensitive:
+        return fnmatch.fnmatchcase(name, fn_pattern)
+    else:
+        # Case-insensitive matching: compare uppercase versions
+        return fnmatch.fnmatch(name.upper(), fn_pattern.upper())
 
 
-def filter_tables(tables: Sequence[str], include: Sequence[str], exclude: Sequence[str]) -> List[str]:
+def filter_tables(
+    tables: Sequence[str],
+    include: Sequence[str],
+    exclude: Sequence[str],
+    case_sensitive: bool = False,
+) -> List[str]:
     """Filter tables using include/exclude patterns.
 
-    Include patterns keep a table if it matches *any* include pattern.
-    Exclude patterns drop a table if it matches *any* exclude pattern.
+    Parameters
+    ----------
+    tables : Sequence[str]
+        List of table names to filter.
+    include : Sequence[str]
+        Patterns to include (keeps tables matching *any* include pattern).
+    exclude : Sequence[str]
+        Patterns to exclude (drops tables matching *any* exclude pattern).
+    case_sensitive : bool
+        If False (default), pattern matching is case-insensitive.
+
+    Returns
+    -------
+    List[str]
+        Filtered and sorted list of table names.
     """
     result = list(tables)
     if include:
-        result = [t for t in result if any(matches_pattern(t, p) for p in include)]
+        result = [t for t in result if any(matches_pattern(t, p, case_sensitive) for p in include)]
     if exclude:
-        result = [t for t in result if not any(matches_pattern(t, p) for p in exclude)]
+        result = [t for t in result if not any(matches_pattern(t, p, case_sensitive) for p in exclude)]
     return sorted(set(result))
 
 
@@ -142,15 +195,20 @@ def q_get_table_ddl(db: str, schema: str, table: str) -> str:
 
 
 def q_data_fingerprint(db: str, schema: str, table: str) -> str:
-    """Fingerprint query: count + hash_agg(hash(row))."""
-    alias = table
-    fq = f"{db}.{schema}.{table}"
+    """Fingerprint query: count + hash_agg(hash(row)).
+
+    Note: The table alias is quoted with double quotes to handle table names
+    containing spaces, special characters, or SQL reserved keywords.
+    """
+    # Quote identifiers to handle special characters and reserved words
+    quoted_table = f'"{table}"'
+    fq = f'"{db}"."{schema}"."{table}"'
     return f"""
 SELECT
-  '{fq}' AS TABLE_FQN,
+  '{db}.{schema}.{table}' AS TABLE_FQN,
   COUNT(*) AS ROW_COUNT,
-  HASH_AGG(HASH({alias}.*)) AS HASH_ALL_COLUMNS
-FROM {fq} {alias};
+  HASH_AGG(HASH({quoted_table}.*)) AS HASH_ALL_COLUMNS
+FROM {fq} {quoted_table};
 """.strip()
 
 

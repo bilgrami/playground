@@ -35,6 +35,7 @@ repository README for a minimal working configuration.
 from __future__ import annotations
 
 import argparse
+import os
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -81,8 +82,35 @@ def load_config(path: Path) -> Dict[str, Any]:
         return yaml.safe_load(f) or {}
 
 
+def get_env_var(side: str, field: str) -> str | None:
+    """Get environment variable for a config field.
+
+    Environment variable format: SNOWDIFF_<SIDE>_<FIELD>
+    Example: SNOWDIFF_LEFT_CONNECTION, SNOWDIFF_RIGHT_DATABASE
+
+    Parameters
+    ----------
+    side : str
+        Either "left" or "right".
+    field : str
+        The field name (connection, role, warehouse, database, schema).
+
+    Returns
+    -------
+    str | None
+        The environment variable value, or None if not set.
+    """
+    var_name = f"SNOWDIFF_{side.upper()}_{field.upper()}"
+    return os.environ.get(var_name)
+
+
 def build_target(cfg: Dict[str, Any], side: str, overrides: Dict[str, str]) -> SnowTarget:
-    """Build a SnowTarget from config + CLI overrides.
+    """Build a SnowTarget from environment variables, CLI overrides, or config.
+
+    Value priority (highest to lowest):
+      1. Environment variables (SNOWDIFF_LEFT_CONNECTION, etc.)
+      2. CLI overrides (--left-connection, etc.)
+      3. Config file values (<side>.connection, etc.)
 
     Config expects:
       - <side>.connection (SnowCLI connection name)
@@ -90,18 +118,20 @@ def build_target(cfg: Dict[str, Any], side: str, overrides: Dict[str, str]) -> S
     """
     scfg = cfg.get(side, {}) or {}
 
-    connection = overrides.get(f"{side}_connection") or scfg.get("connection")
-    if not connection:
-        raise SystemExit(f"ERROR: missing {side}.connection in config (SnowCLI connection name).")
-
     def pick(field: str) -> str:
-        v = overrides.get(f"{side}_{field}") or scfg.get(field)
+        """Pick value from env var, CLI override, or config (in priority order)."""
+        v = get_env_var(side, field) or overrides.get(f"{side}_{field}") or scfg.get(field)
         if not v:
-            raise SystemExit(f"ERROR: missing {side}.{field} in config.")
+            env_var = f"SNOWDIFF_{side.upper()}_{field.upper()}"
+            cli_flag = f"--{side}-{field.replace('_', '-')}"
+            raise SystemExit(
+                f"ERROR: missing {side}.{field} in config.\n"
+                f"  Set via: {env_var} environment variable, {cli_flag} CLI flag, or {side}.{field} in config."
+            )
         return v
 
     return SnowTarget(
-        connection=connection,
+        connection=pick("connection"),
         role=pick("role"),
         warehouse=pick("warehouse"),
         database=pick("database"),
@@ -139,12 +169,21 @@ def read_options(cfg: Dict[str, Any], args: argparse.Namespace) -> Options:
 
 
 def read_table_filter(cfg: Dict[str, Any], args: argparse.Namespace) -> TableFilter:
-    """Create TableFilter from config + CLI patterns."""
+    """Create TableFilter from config + CLI patterns.
+
+    The case_sensitive option defaults to False (case-insensitive matching),
+    which is recommended for Snowflake where unquoted identifiers are
+    case-insensitive.
+    """
     cfg_incl = deep_get(cfg, ["table_filter", "include"], []) or []
     cfg_excl = deep_get(cfg, ["table_filter", "exclude"], []) or []
     incl = list(cfg_incl) + list(args.include or [])
     excl = list(cfg_excl) + list(args.exclude or [])
-    return TableFilter(include=incl, exclude=excl)
+
+    # Case sensitivity: default is False (case-insensitive)
+    case_sensitive = bool(deep_get(cfg, ["table_filter", "case_sensitive"], False))
+
+    return TableFilter(include=incl, exclude=excl, case_sensitive=case_sensitive)
 
 
 def read_comment_collection(cfg: Dict[str, Any], args: argparse.Namespace) -> CommentCollection:
@@ -154,6 +193,23 @@ def read_comment_collection(cfg: Dict[str, Any], args: argparse.Namespace) -> Co
     if mode not in ("desc", "account_usage"):
         mode = "desc"
     return CommentCollection(column_mode=mode)
+
+
+def cleanup_output_dir(out_root: Path) -> None:
+    """Remove stale diff files and snapshots before a new run.
+
+    This ensures that re-running `make diff` produces only fresh results,
+    preventing confusion from leftover files from previous runs.
+    """
+    import shutil
+
+    diffs_dir = out_root / "diffs"
+    snaps_dir = out_root / "snapshots"
+
+    for d in (diffs_dir, snaps_dir):
+        if d.exists():
+            shutil.rmtree(d)
+            print(f"Cleaned up: {d}")
 
 
 def cmd_connect_test(left: SnowTarget, right: SnowTarget) -> int:
@@ -183,6 +239,9 @@ def cmd_diff(
     left_snap = snaps_dir / "left"
     right_snap = snaps_dir / "right"
 
+    # Clean up stale diffs and snapshots from previous runs
+    cleanup_output_dir(out_root)
+
     for p in (diffs_dir, left_snap, right_snap):
         p.mkdir(parents=True, exist_ok=True)
 
@@ -209,7 +268,7 @@ def cmd_diff(
     left_tables = collect_table_list(left, left_snap)
     right_tables = collect_table_list(right, right_snap)
     tables_union = sorted(set(left_tables) | set(right_tables))
-    tables_filtered = filter_tables(tables_union, tf.include, tf.exclude)
+    tables_filtered = filter_tables(tables_union, tf.include, tf.exclude, tf.case_sensitive)
 
     write_text(left_snap / "tables_filtered.tsv", "\n".join(tables_filtered) + ("\n" if tables_filtered else ""))
     write_text(right_snap / "tables_filtered.tsv", "\n".join(tables_filtered) + ("\n" if tables_filtered else ""))
