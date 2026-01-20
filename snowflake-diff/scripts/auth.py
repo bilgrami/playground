@@ -11,7 +11,7 @@ a ``snow.toml`` file).
 The rest of the codebase treats Snowflake access as a pure function:
 
 - input: :class:`~scripts.auth.SnowTarget` + SQL
-- output: TSV text (or an ``__ERROR__`` sentinel)
+- output: CSV text (or an ``__ERROR__`` sentinel)
 
 This keeps collection logic testable and centralized.
 
@@ -75,13 +75,13 @@ DEFAULT_TIMEOUT_SECONDS = 300  # 5 minutes
 
 
 def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
-    """Run a SQL query via SnowCLI and return TSV output.
+    """Run a SQL query via SnowCLI and return CSV output.
 
     The command is executed with:
 
     - ``--connection <name>``
     - role/warehouse/database/schema overrides
-    - ``--format tsv`` for stable diffs
+    - ``--format CSV`` for stable diffs
 
     Parameters
     ----------
@@ -96,7 +96,7 @@ def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
     Returns
     -------
     str
-        TSV output as text with normalized newlines. If the SnowCLI command fails,
+        CSV output as text with normalized newlines. If the SnowCLI command fails,
         a sentinel string starting with ``__ERROR__`` is returned containing the
         exit code and stderr. If the command times out, an ``__ERROR__`` sentinel
         with ``TIMEOUT`` is returned.
@@ -125,7 +125,7 @@ def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
         "--query",
         query,
         "--format",
-        "tsv",
+        "CSV",
     ]
 
     try:
