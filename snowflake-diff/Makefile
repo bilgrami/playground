@@ -30,16 +30,16 @@ test:
 	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=80
 
 connect-test:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) connect-test
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) connect-test
 
 diff:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT)
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT)
 
 diff-fast:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT) --no-data --no-procs
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT) --no-data --no-procs
 
 diff-ddl:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT) --no-data --no-comments --no-last-changed
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT) --no-data --no-comments --no-last-changed
 
 showreport:
 	@echo "Summary: $(OUT)/SUMMARY.md"
