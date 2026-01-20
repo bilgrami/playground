@@ -6,7 +6,7 @@
 #   make diff-ddl
 #   make showreport
 
-PYTHON ?= python3
+PYTHON ?= python
 CONFIG ?= config.yml
 OUT ?= out
 
@@ -36,10 +36,10 @@ diff:
 	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT)
 
 diff-fast:
-	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT) --no-data --no-procs
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) --no-data --no-procs diff --out $(OUT)
 
 diff-ddl:
-	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT) --no-data --no-comments --no-last-changed
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) --no-data --no-comments --no-last-changed diff --out $(OUT)
 
 showreport:
 	@echo "Summary: $(OUT)/SUMMARY.md"
