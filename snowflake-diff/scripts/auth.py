@@ -81,7 +81,7 @@ def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
 
     - ``--connection <name>``
     - role/warehouse/database/schema overrides
-    - ``--format tsv --header false`` for stable diffs
+    - ``--format tsv`` for stable diffs
 
     Parameters
     ----------
@@ -126,8 +126,6 @@ def run_sql(target: SnowTarget, query: str, timeout: int | None = None) -> str:
         query,
         "--format",
         "tsv",
-        "--header",
-        "false",
     ]
 
     try:
