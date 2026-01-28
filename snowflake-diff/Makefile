@@ -6,7 +6,7 @@
 #   make diff-ddl
 #   make showreport
 
-PYTHON ?= python3
+PYTHON ?= python
 CONFIG ?= config.yml
 OUT ?= out
 
@@ -27,19 +27,19 @@ install:
 	$(PYTHON) -m pip install -r requirements.txt
 
 test:
-	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=67
+	$(PYTHON) -m pytest --cov=scripts --cov-report=term-missing --cov-fail-under=80
 
 connect-test:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) connect-test
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) connect-test
 
 diff:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT)
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) diff --out $(OUT)
 
 diff-fast:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT) --no-data --no-procs
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) --no-data --no-procs diff --out $(OUT)
 
 diff-ddl:
-	$(PYTHON) scripts/snowdiff.py --config $(CONFIG) diff --out $(OUT) --no-data --no-comments --no-last-changed
+	$(PYTHON) -m scripts.snowdiff --config $(CONFIG) --no-data --no-comments --no-last-changed diff --out $(OUT)
 
 showreport:
 	@echo "Summary: $(OUT)/SUMMARY.md"

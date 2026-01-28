@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: help install test scenarios docker-up docker-down ingest notebook notebook-docker notebook-stop
+.PHONY: help install test scenarios docker-up docker-down ingest notebook notebook-docker notebook-stop notebook-java notebook-java-stop
 
 help:
 	@echo "Targets:"
@@ -13,6 +13,8 @@ help:
 	@echo "  notebook        Start Jupyter notebook locally"
 	@echo "  notebook-docker Start Jupyter notebook in Docker with PySpark"
 	@echo "  notebook-stop   Stop Docker notebook container"
+	@echo "  notebook-java   Start Java notebook in Docker with IJava kernel (port 8889)"
+	@echo "  notebook-java-stop Stop Java Docker notebook container"
 
 install:
 	$(PYTHON) -m pip install -r requirements.txt
@@ -43,3 +45,9 @@ notebook-docker:
 
 notebook-stop:
 	@scripts/notebook.sh stop
+
+notebook-java:
+	@scripts/notebook-java.sh docker
+
+notebook-java-stop:
+	@scripts/notebook-java.sh stop

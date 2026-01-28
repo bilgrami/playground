@@ -15,7 +15,7 @@ This is optimized for **drift detection** (dev/stage/prod), not full data reconc
 
 ---
 
-## Why “connection names” (SnowCLI profiles)
+## Why "connection names" (SnowCLI profiles)
 
 Instead of embedding credentials (account/user/authenticator), `config.yml` uses:
 
@@ -23,6 +23,10 @@ Instead of embedding credentials (account/user/authenticator), `config.yml` uses
 - `right.connection: <name>`
 
 These names must exist in your SnowCLI configuration (often `snow.toml`).
+
+> **Security Note**: This design ensures `config.yml` never contains credentials.
+> Credentials are managed by SnowCLI in `~/.snowflake/connections.toml` or `snow.toml`.
+> **Never commit credentials to version control** - only connection profile names.
 
 ---
 
@@ -164,6 +168,17 @@ Pattern types:
 * SQL LIKE patterns: `%` and `_`
 * Regex: prefix with `re:` (e.g. `re:^FACT_.*$`)
 
+**Case sensitivity** (new in v2):
+* By default, pattern matching is **case-insensitive** (recommended for Snowflake)
+* Pattern `fact_%` will match `FACT_SALES`, `fact_orders`, etc.
+* Set `case_sensitive: true` in config for case-sensitive matching:
+
+```yaml
+table_filter:
+  include: ["FACT_%"]
+  case_sensitive: true  # strict case matching
+```
+
 ### Column comment mode
 
 * `desc` (default): runs `DESC TABLE` per table (accurate, slower)
@@ -228,6 +243,40 @@ python3 scripts/snowdiff.py --config config.yml diff --right-role NEW_ROLE
 
 ---
 
+## Environment variables
+
+All connection settings can be overridden via environment variables, useful for CI/CD and containerized deployments.
+
+**Format**: `SNOWDIFF_<SIDE>_<FIELD>`
+
+| Variable | Description |
+|----------|-------------|
+| `SNOWDIFF_LEFT_CONNECTION` | SnowCLI connection name for left |
+| `SNOWDIFF_LEFT_ROLE` | Role for left |
+| `SNOWDIFF_LEFT_WAREHOUSE` | Warehouse for left |
+| `SNOWDIFF_LEFT_DATABASE` | Database for left |
+| `SNOWDIFF_LEFT_SCHEMA` | Schema for left |
+| `SNOWDIFF_RIGHT_CONNECTION` | SnowCLI connection name for right |
+| `SNOWDIFF_RIGHT_ROLE` | Role for right |
+| `SNOWDIFF_RIGHT_WAREHOUSE` | Warehouse for right |
+| `SNOWDIFF_RIGHT_DATABASE` | Database for right |
+| `SNOWDIFF_RIGHT_SCHEMA` | Schema for right |
+
+**Priority** (highest to lowest):
+1. Environment variables
+2. CLI arguments (`--left-role`, etc.)
+3. Config file (`config.yml`)
+
+**Example**:
+
+```bash
+export SNOWDIFF_LEFT_CONNECTION=dev
+export SNOWDIFF_RIGHT_CONNECTION=prod
+make diff
+```
+
+---
+
 ## PRD (product requirements)
 
 ### Goal
@@ -256,15 +305,19 @@ Provide a reliable, CLI-driven diff for Snowflake schema and data drift across t
 ## TDD (test-driven development notes)
 
 ### Unit test scope
-- Pure utility functions in `scripts/utils.py` and `scripts/diffing.py`.
-- Markdown report generation in `scripts/reporting.py`.
+- Pure utility functions in `scripts/utils.py` and `scripts/diffing.py`
+- Markdown report generation in `scripts/reporting.py`
+- SQL query generation in `scripts/collectors.py` (fingerprint queries, pattern matching)
+- Config parsing and validation in `scripts/snowdiff.py`
+- SnowCLI wrapper functions in `scripts/auth.py` (mocked subprocess calls)
 
 ### What we do not unit test
-- SnowCLI execution paths in `scripts/auth.py` and collectors that require a live Snowflake session.
-- End-to-end diff runs (covered via manual runs against real environments).
+- Live SnowCLI execution (requires active Snowflake connection)
+- Collection functions that call `run_sql()` with real queries
+- End-to-end diff runs (covered via manual runs against real environments)
 
 ### Coverage bar
-Unit tests enforce `67%` minimum coverage via `make test`.
+Unit tests enforce **80%** minimum coverage via `make test` (71 tests, 92% actual coverage).
 
 ---
 
@@ -406,6 +459,12 @@ Open:
 
 ## Troubleshooting
 
-* `snow` not found: ensure SnowCLI is installed and on PATH.
-* Connection test fails: run `make connect-test` and verify your SnowCLI profiles.
-* `__ERROR__` appears in snapshots: check role privileges for `GET_DDL`, `SHOW`, or `ACCOUNT_USAGE`.
+| Issue | Solution |
+|-------|----------|
+| `snow` not found | Ensure SnowCLI is installed and on PATH. Run `snow --version` to verify. |
+| Connection test fails | Run `make connect-test` and verify your SnowCLI profiles in `snow.toml`. |
+| `__ERROR__` in snapshots | Check role privileges for `GET_DDL`, `SHOW`, or `ACCOUNT_USAGE`. |
+| `__ERROR__ TIMEOUT` | Query timed out (default 300s). Use `--no-data` to skip expensive fingerprinting. |
+| Missing config field | Error message shows 3 ways to set it: env var, CLI flag, or config file. |
+| Pattern doesn't match | By default, patterns are case-insensitive. Use `case_sensitive: true` if needed. |
+| Stale diffs after re-run | Fixed in v2: `make diff` now auto-cleans old diffs before generating new ones. |
