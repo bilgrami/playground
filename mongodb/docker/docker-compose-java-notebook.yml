@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  jupyter-java:
+    image: jupyter/datascience-notebook:latest
+    container_name: json-flatten-java-notebook
+    ports:
+      - "8889:8888"
+    volumes:
+      - ../..:/home/jovyan/work
+    working_dir: /home/jovyan/work/mongodb
+    command: >
+      bash -c "
+        echo 'Installing IJava kernel...' &&
+        curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip -o /tmp/ijava.zip &&
+        unzip -q /tmp/ijava.zip -d /tmp/ijava &&
+        cd /tmp/ijava && python install.py --sys-prefix &&
+        rm -rf /tmp/ijava /tmp/ijava.zip &&
+        echo 'IJava kernel installed successfully!' &&
+        jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.token='' --NotebookApp.password=''
+      "
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s

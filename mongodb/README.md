@@ -414,6 +414,50 @@ The notebook includes PySpark integration for:
 
 See `examples/demo.ipynb` for the complete interactive demonstration.
 
+### Java Notebook
+
+A Java version of the demo notebook (`examples/demo_java.ipynb`) is also available, providing the same JSON flattening functionality using Java and the IJava Jupyter kernel.
+
+#### Java Notebook Features
+
+- **Same 10 Milestones**: Covers all the same topics as the Python notebook
+- **Java Libraries**: Uses Gson for JSON parsing, OpenCSV for CSV operations
+- **MongoDB Java Driver**: Native Java integration with MongoDB
+- **IJava Kernel**: Interactive Java execution in Jupyter
+
+#### Running the Java Notebook
+
+**Option 1: Using Makefile (Recommended)**
+```bash
+# Start Java notebook in Docker (port 8889)
+make notebook-java
+
+# Stop Java Docker notebook
+make notebook-java-stop
+```
+
+**Option 2: Using Script**
+```bash
+# Docker with IJava kernel
+./scripts/notebook-java.sh docker
+
+# Stop Docker notebook
+./scripts/notebook-java.sh stop
+```
+
+**Option 3: Direct Docker Compose**
+```bash
+docker-compose -f docker/docker-compose-java-notebook.yml up
+```
+
+#### Java Notebook Notes
+
+- Runs on **port 8889** (can run alongside Python notebook on 8888)
+- First run takes longer as it installs the IJava kernel
+- Requires Docker with Java support (included in jupyter/datascience-notebook)
+
+See `examples/demo_java.ipynb` for the complete Java demonstration.
+
 ## License
 
 See root license in the parent repository.

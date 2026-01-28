@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-01-27 | 🚀 feat: Java Notebook with Docker Support
+
+### 📄 Summary
+- Created Java version of demo notebook (`examples/demo_java.ipynb`) with same 10 milestones
+- Added Docker Compose configuration for Java/IJava Jupyter kernel
+- Added shell script for launching Java notebook via Docker
+- Updated Makefile with Java notebook targets
+
+### 📁 Files Changed
+- `examples/demo_java.ipynb` - Java notebook with same functionality as Python version
+- `docker/docker-compose-java-notebook.yml` - Docker Compose for IJava kernel
+- `scripts/notebook-java.sh` - Shell script for docker/local/stop modes
+- `Makefile` - Added notebook-java and notebook-java-stop targets
+- `README.md` - Added Java notebook documentation
+- `CHANGELOG.md` - This entry
+
+### 🧠 Rationale
+- Provide Java developers with equivalent JSON flattening learning resource
+- Enable polyglot development workflows
+- Maintain consistency with existing Docker patterns
+
+### 🔄 Behavior / Compatibility Implications
+- New notebook runs on port 8889 (Python notebook on 8888)
+- Can run both notebooks simultaneously
+- No changes to existing functionality
+
+### 🧪 Testing Recommendations
+- `make notebook-java` from mongodb directory
+- Access http://localhost:8889
+- Open examples/demo_java.ipynb
+- Run cells to verify IJava kernel works
+- `make notebook-java-stop`
+
+### 📌 Follow‑ups
+- Consider adding Scala notebook support
+- Add Java-specific MongoDB driver examples
+
+---
+
 ## 2026-01-14 | 🚀 feat: Comprehensive Jupyter Notebook with PySpark Support
 
 ### 📄 Summary
